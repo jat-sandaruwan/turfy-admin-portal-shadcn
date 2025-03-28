@@ -1,0 +1,11 @@
+- use tailwind css as frontend framework and shadcn ui as component library.
+- authentication is done via firebase.
+- use zustand fro state management.
+- use typescript as the language.
+- use mongoose as the orm for model data.
+- always follow best practices in typescript and next js.
+- add comments as needed to describe complex logics and components.
+- follow next js project best practices.
+- always use app route and do not use page route.
+- use [auth.js](https://github.com/nextauthjs/next-auth) as auth library.
+- always maintain the consistency of user interfaces design.
