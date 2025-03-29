@@ -1,6 +1,9 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { useTheme } from "next-themes"
 import {
   IconCamera,
   IconChartBar,
@@ -11,14 +14,12 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp,
-  IconInnerShadowTop,
   IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react"
-
 import { NavDocuments } from "@/components/dashboard/nav-documents"
 import { NavMain } from "@/components/dashboard/nav-main"
 import { NavSecondary } from "@/components/dashboard/nav-secondary"
@@ -32,6 +33,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useEffect, useState } from "react"
 
 const data = {
   navMain: [
@@ -146,6 +148,19 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  
+  // Ensure component is mounted to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Create inline styles for logo inversion in light mode
+  const logoStyle = {
+    filter: mounted && resolvedTheme === 'light' ? 'invert(100%)' : 'none'
+  };
+  
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -155,10 +170,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="/dashboard">
-                <IconInnerShadowTop className="!size-5" />
+              <Link href="/dashboard" className="flex items-center gap-2">
+                <div className="flex size-6 items-center justify-center rounded-md overflow-hidden">
+                  <Image 
+                    src="/turfy_ball_minimal.png" 
+                    alt="Turfy Logo" 
+                    width={24} 
+                    height={24}
+                    className="object-contain"
+                    style={logoStyle}
+                    priority
+                  />
+                </div>
                 <span className="text-base font-semibold">Turfy Admin</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

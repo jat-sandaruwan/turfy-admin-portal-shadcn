@@ -6,9 +6,13 @@ import {
   IconLogout,
   IconNotification,
   IconUserCircle,
+  IconSun,
+  IconMoon,
+  IconDeviceDesktop
 } from "@tabler/icons-react"
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 
 import {
   Avatar,
@@ -30,11 +34,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEffect, useState } from "react"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
   const { data: session } = useSession()
   const router = useRouter()
+  const { setTheme, theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  // Ensure component is mounted to avoid hydration mismatch with theme
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Extract user data from session
   const user = {
@@ -108,6 +121,31 @@ export function NavUser() {
                 <IconNotification className="mr-2 size-4" />
                 Notifications
               </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              <div className="w-full px-1 py-1.5">
+                <Tabs
+                  defaultValue={theme}
+                  value={theme}
+                  onValueChange={(value) => setTheme(value)}
+                >
+                  <TabsList>
+                    <TabsTrigger value="light">
+                      <IconSun className="size-4" />
+                      Light
+                    </TabsTrigger>
+                    <TabsTrigger value="dark">
+                      <IconMoon className="size-4" />
+                      Dark
+                    </TabsTrigger>
+                    <TabsTrigger value="system">
+                      <IconDeviceDesktop className="size-4" />
+                      System
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>

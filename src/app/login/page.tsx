@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useTheme } from "next-themes"
 import { LoginForm } from "@/components/auth/login-form"
 import { useEffect, useState } from "react"
+import { ThemeToggle } from "@/components/theme/theme-toggle"
 
 export default function LoginPage() {
   const { resolvedTheme } = useTheme()
@@ -20,7 +21,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+    <div className="bg-muted relative flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      {/* Theme Toggle positioned in the top-right corner */}
+      <div className="absolute right-4 top-4">
+        <ThemeToggle variant="ghost" />
+      </div>
+      
       <div className="flex w-full max-w-sm flex-col gap-6">
         <a href="#" className="flex items-center gap-2 self-center font-medium">
           <div className="flex size-8 items-center justify-center rounded-md overflow-hidden">
