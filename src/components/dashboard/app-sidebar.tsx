@@ -62,89 +62,7 @@ const data = {
       url: "/dashboard/team",
       icon: IconUsers,
     },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "/dashboard/capture",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "/dashboard/capture/active",
-        },
-        {
-          title: "Archived",
-          url: "/dashboard/capture/archived",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "/dashboard/proposal",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "/dashboard/proposal/active",
-        },
-        {
-          title: "Archived",
-          url: "/dashboard/proposal/archived",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "/dashboard/prompts",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "/dashboard/prompts/active",
-        },
-        {
-          title: "Archived",
-          url: "/dashboard/prompts/archived",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "/dashboard/settings",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "/dashboard/help",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "/dashboard/search",
-      icon: IconSearch,
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "/dashboard/data-library",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "/dashboard/reports",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "/dashboard/word-assistant",
-      icon: IconFileWord,
-    },
-  ],
+  ]
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -190,8 +108,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
