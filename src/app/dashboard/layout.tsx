@@ -4,6 +4,8 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export default async function DashboardLayout({
     children
@@ -45,7 +47,9 @@ export default async function DashboardLayout({
                 <SiteHeader />
                 <div className="flex flex-1 flex-col">
                     <div className="@container/main flex flex-1 flex-col gap-2">
-                        {children}
+                    <Suspense fallback={<Loading />}>
+                            {children}
+                    </Suspense>
                     </div>
                 </div>
             </SidebarInset>
