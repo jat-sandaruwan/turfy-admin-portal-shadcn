@@ -4,35 +4,10 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useTheme } from "next-themes"
-import {
-  IconCamera,
-  IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
-  IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
-  IconUsers,
-} from "@tabler/icons-react"
-import { NavDocuments } from "@/components/dashboard/nav-documents"
+import { IconChartBar, IconDashboard, IconFolder, IconListDetails, IconUsers } from "@tabler/icons-react"
 import { NavMain } from "@/components/dashboard/nav-main"
-import { NavSecondary } from "@/components/dashboard/nav-secondary"
 import { NavUser } from "@/components/dashboard/nav-user"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { useEffect, useState } from "react"
 
 const data = {
