@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     // Parse request body
     const body = await req.json();
     
-    // Extract necessary fields
+    // Extract necessary fields including sportsTypes and amenities
     const {
       name,
       description,
@@ -29,7 +29,9 @@ export async function POST(req: NextRequest) {
       longitude,
       latitude,
       commissionPercentage,
-      ownerId
+      ownerId,
+      sportsTypes,
+      amenities
     } = body;
     
     // Validate required fields
@@ -54,8 +56,8 @@ export async function POST(req: NextRequest) {
         coordinates: [longitude, latitude]
       },
       commissionPercentage,
-      amenities: [],
-      sportsTypes: [],
+      amenities: amenities || [],
+      sportsTypes: sportsTypes || [],
       images: [],
       country,
       currency,
