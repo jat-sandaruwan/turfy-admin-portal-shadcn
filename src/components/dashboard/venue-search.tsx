@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, SearchIcon } from "lucide-react";
+import { Check, ChevronsUpDown, PlusCircle, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "@/components/ui/command";
 import {
   Popover,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { useVenueStore } from "@/lib/store/venue-store";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useRouter } from "next/navigation";
 
 type Venue = {
   _id: string;
@@ -32,6 +34,7 @@ export function VenueSearch() {
   const [isLoading, setIsLoading] = React.useState(false);
   
   const { activeVenueId, activeVenueName, setActiveVenue } = useVenueStore();
+  const router = useRouter();
   
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   
@@ -49,7 +52,6 @@ export function VenueSearch() {
         if (!response.ok) throw new Error('Failed to fetch venues');
         
         const data = await response.json();
-        console.log("Fetched venues:", data);
         setVenues(data);
       } catch (error) {
         console.error('Error fetching venues:', error);
@@ -60,9 +62,14 @@ export function VenueSearch() {
     
     fetchVenues();
   }, [debouncedSearchQuery]);
+
+  const handleCreateVenue = () => {
+    setOpen(false);
+    router.push('/dashboard/venues/create');
+  };
   
   return (
-    <div className="w-full my-4">
+    <div className="w-full px-3 mb-3">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -71,11 +78,18 @@ export function VenueSearch() {
             aria-expanded={open}
             className="w-full justify-between"
           >
-            {activeVenueId ? activeVenueName : "Search venues..."}
+            {activeVenueId ? (
+              <span className="truncate">{activeVenueName}</span>
+            ) : (
+              <span className="text-muted-foreground flex items-center gap-1">
+                <Search className="h-3.5 w-3.5" />
+                <span>Search venues...</span>
+              </span>
+            )}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
+        <PopoverContent className="w-[240px] p-0">
           <Command>
             <CommandInput 
               placeholder="Search venues..." 
@@ -89,11 +103,11 @@ export function VenueSearch() {
                   Loading...
                 </div>
               )}
-              {!isLoading && venues.length === 0 && (
+              {!isLoading && venues.length === 0 && debouncedSearchQuery && (
                 <CommandEmpty>No venues found.</CommandEmpty>
               )}
               {!isLoading && venues.length > 0 && (
-                <CommandGroup>
+                <CommandGroup heading="Venues">
                   {venues.map((venue) => (
                     <CommandItem
                       key={venue._id}
@@ -114,6 +128,16 @@ export function VenueSearch() {
                   ))}
                 </CommandGroup>
               )}
+              <CommandSeparator />
+              <CommandGroup>
+                <CommandItem
+                  onSelect={handleCreateVenue}
+                  className="text-primary cursor-pointer"
+                >
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Create New Venue
+                </CommandItem>
+              </CommandGroup>
             </CommandList>
           </Command>
         </PopoverContent>
