@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, Document, Model, Types, models } from 'mongoose';
 import { IFacility } from './facility.model';
 import { IUser, IVenueOwner } from './user.model';
 
@@ -125,5 +125,6 @@ venueSchema.index({ location: '2dsphere' }, { name: 'location_2dsphere' });
 venueSchema.index({ owner: 1 });
 venueSchema.index({ status: 1 });
 
-const Venue: Model<IVenue> = model<IVenue>('Venue', venueSchema);
+// Check if the model already exists before creating a new one
+const Venue: Model<IVenue> = models.Venue || model<IVenue>('Venue', venueSchema);
 export default Venue;
