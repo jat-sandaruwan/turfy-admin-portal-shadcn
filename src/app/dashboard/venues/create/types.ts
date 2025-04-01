@@ -49,6 +49,12 @@ export const venueFormSchema = z.object({
   ownerId: z.string().min(1, { message: "Please select a venue owner" }),
   sportsTypes: z.array(z.string()).min(1, { message: "Select at least one sport type" }),
   amenities: z.array(z.string()).optional(),
+  images: z.array(
+    z.object({
+      url: z.string().url({ message: "Invalid image URL" }),
+      publicId: z.string(),
+    })
+  ).max(5, { message: "Maximum 5 images allowed" }).optional(),
 });
 
 export type VenueFormValues = z.infer<typeof venueFormSchema>;
@@ -64,4 +70,9 @@ export interface Amenity {
   name: string;
   value: string;
   icon?: Map<string, string>;
+}
+
+export interface VenueImage {
+  url: string;
+  publicId: string;
 }

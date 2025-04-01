@@ -12,7 +12,7 @@ import {
   Marker,
   useMap 
 } from '@vis.gl/react-google-maps';
-import { useMapStore } from '@/store/mapStore';
+import { useMapStore } from '@/lib/store/map-store';
 import React from 'react';
 // Import the required packages
 import countries from 'i18n-iso-countries';

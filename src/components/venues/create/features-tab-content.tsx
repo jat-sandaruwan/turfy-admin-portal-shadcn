@@ -37,6 +37,7 @@ interface Amenity {
 interface FeaturesTabContentProps {
   form: UseFormReturn<VenueFormValues>;
   onBack: () => void;
+  onNext: () => void; // Add this new prop
   isSubmitting: boolean;
   isLoadingOwners: boolean;
   isLoadingSportsTypes: boolean;
@@ -49,6 +50,7 @@ interface FeaturesTabContentProps {
 export function FeaturesTabContent({
   form,
   onBack,
+  onNext, // Add this to props destructuring
   isSubmitting,
   isLoadingOwners,
   isLoadingSportsTypes,
@@ -201,9 +203,8 @@ export function FeaturesTabContent({
         <Button type="button" variant="outline" onClick={onBack}>
           Back
         </Button>
-        <Button type="submit" disabled={isSubmitting || isLoadingOwners}>
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Create Venue
+        <Button type="button" onClick={onNext}>
+          Next: Images
         </Button>
       </div>
     </div>

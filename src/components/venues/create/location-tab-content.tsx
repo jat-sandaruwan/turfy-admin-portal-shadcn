@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import GoogleMapSelector from "@/components/venues/GoogleMapSelector";
+import GoogleMapSelector from "@/components/venues/create/google-map-selector";
 import { VenueFormValues } from "@/app/dashboard/venues/create/types";
 
 interface LocationTabContentProps {

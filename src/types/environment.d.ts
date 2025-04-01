@@ -15,5 +15,10 @@ declare namespace NodeJS {
     FIREBASE_TOKEN_URI: string; // Firebase token URI
     NEXTAUTH_SECRET: string; // NextAuth secret for JWT signing
     NEXTAUTH_URL: string; // NextAuth URL for redirects
+    CLOUDINARY_CLOUD_NAME: string; // Cloudinary cloud name
+    CLOUDINARY_API_KEY: string; // Cloudinary API key
+    CLOUDINARY_API_SECRET: string; // Cloudinary API secret
+    STRIPE_SECRET_KEY: string; // Stripe secret key for server-side operations
+    STRIPE_WEBHOOK_SECRET: string; // Stripe webhook secret for server-side operations
   }
 }

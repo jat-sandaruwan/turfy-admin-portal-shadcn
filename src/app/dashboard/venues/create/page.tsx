@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Building, AlertCircle, Loader2 } from "lucide-react";
+import { v4 as uuidv4 } from 'uuid';
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -23,9 +24,11 @@ import { useVenueStore } from "@/lib/store/venue-store";
 import React from "react";
 
 // Import tab content components
-import { DetailsTabContent } from "@/components/venues/create/DetailsTabContent";
-import { LocationTabContent } from "@/components/venues/create/LocationTabContent";
-import { FeaturesTabContent } from "@/components/venues/create/FeaturesTabContent";
+import { DetailsTabContent } from "@/components/venues/create/details-tab-content";
+import { LocationTabContent } from "@/components/venues/create/location-tab-content";
+import { FeaturesTabContent } from "@/components/venues/create/features-tab-content";
+import { ImagesTabContent } from "@/components/venues/create/images-tab-content";
+import { ReviewTabContent } from "@/components/venues/create/review-tab-content";
 
 // Import types
 import { venueFormSchema, VenueFormValues, SportsType, Amenity } from "./types";
@@ -40,6 +43,7 @@ export default function CreateVenuePage() {
   const [isLoadingSportsTypes, setIsLoadingSportsTypes] = useState(true);
   const [isLoadingAmenities, setIsLoadingAmenities] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [tempVenueId] = useState(`temp_${uuidv4()}`); // Generate a temporary ID for uploads
   const router = useRouter();
   const { setActiveVenue } = useVenueStore();
 
@@ -56,6 +60,7 @@ export default function CreateVenuePage() {
     ownerId: "",
     sportsTypes: [],
     amenities: [],
+    images: [],
   };
 
   // Initialize form
@@ -143,6 +148,10 @@ export default function CreateVenuePage() {
   const handleLocationBack = () => setActiveTab("details");
   const handleLocationNext = () => setActiveTab("features");
   const handleFeaturesBack = () => setActiveTab("location");
+  const handleFeaturesNext = () => setActiveTab("images");
+  const handleImagesBack = () => setActiveTab("features");
+  const handleImagesNext = () => setActiveTab("review");
+  const handleReviewBack = () => setActiveTab("images");
 
   // Form submission handler
   async function onSubmit(data: VenueFormValues) {
@@ -154,6 +163,8 @@ export default function CreateVenuePage() {
       longitude: parseFloat(data.longitude),
       latitude: parseFloat(data.latitude),
       commissionPercentage: parseFloat(data.commissionPercentage),
+      // Extract URLs from images if exists
+      images: data.images?.map((img) => img.url) || [],
     };
 
     try {
@@ -211,10 +222,12 @@ export default function CreateVenuePage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-3 mx-6 mb-2">
-                <TabsTrigger value="details">Venue Details</TabsTrigger>
+              <TabsList className="grid grid-cols-5 mx-6 mb-2">
+                <TabsTrigger value="details">Details</TabsTrigger>
                 <TabsTrigger value="location">Location</TabsTrigger>
-                <TabsTrigger value="features">Features & Owner</TabsTrigger>
+                <TabsTrigger value="features">Features</TabsTrigger>
+                <TabsTrigger value="images">Images</TabsTrigger>
+                <TabsTrigger value="review">Review</TabsTrigger>
               </TabsList>
 
               <CardContent className="p-6 pt-2">
@@ -235,10 +248,31 @@ export default function CreateVenuePage() {
                   <FeaturesTabContent
                     form={form}
                     onBack={handleFeaturesBack}
+                    onNext={handleFeaturesNext}
                     isSubmitting={isSubmitting}
                     isLoadingOwners={isLoadingOwners}
                     isLoadingSportsTypes={isLoadingSportsTypes}
                     isLoadingAmenities={isLoadingAmenities}
+                    sportsTypes={sportsTypes}
+                    amenities={amenities}
+                    venueOwners={venueOwners}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="images">
+                  <ImagesTabContent
+                    form={form}
+                    onBack={handleImagesBack}
+                    onNext={handleImagesNext}
+                    venueId={tempVenueId}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="review">
+                  <ReviewTabContent
+                    form={form}
+                    onBack={handleReviewBack}
+                    isSubmitting={isSubmitting}
                     sportsTypes={sportsTypes}
                     amenities={amenities}
                     venueOwners={venueOwners}
@@ -251,10 +285,12 @@ export default function CreateVenuePage() {
               <Button type="button" variant="outline" onClick={() => router.back()} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting || isLoadingOwners}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Venue
-              </Button>
+              {activeTab === "review" && (
+                <Button type="submit" className="bg-primary" disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Create Venue
+                </Button>
+              )}
             </CardFooter>
           </form>
         </Form>

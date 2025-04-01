@@ -62,7 +62,7 @@ const venueSchema = new Schema<IVenue>(
     commissionPercentage: { type: Number, required: true, min: 0, max: 100 },
     amenities: { type: [String], default: [] },
     sportsTypes: { type: [String], default: [] },
-    images: [{ type: String }],
+    images: { type: [String], default: [] },
     isEnabled: { type: Boolean, default: true },
     country: {
       type: String,

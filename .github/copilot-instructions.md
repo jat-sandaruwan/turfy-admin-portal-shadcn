@@ -9,3 +9,5 @@
 - always use app route and do not use page route.
 - use [auth.js](https://github.com/nextauthjs/next-auth) as auth library.
 - always maintain the consistency of user interfaces design.
+- Use lowercase with hyphens for multi-word filenames: `about-us.js`, `not aboutUs.js`.
+- for naming config files or models use file naming as this - `example.model.ts`, `example.config.ts`.
