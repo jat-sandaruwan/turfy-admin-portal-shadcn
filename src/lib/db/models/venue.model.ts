@@ -35,6 +35,7 @@ export interface IVenue extends Document {
     4: number;
     5: number;
   };
+  deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -116,6 +117,7 @@ const venueSchema = new Schema<IVenue>(
       4: { type: Number, default: 0 },
       5: { type: Number, default: 0 },
     },
+    deletedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

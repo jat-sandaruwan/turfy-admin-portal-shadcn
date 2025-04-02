@@ -23,7 +23,6 @@ import { Fragment } from "react"
  */
 export function SiteHeader() {
   const pathname = usePathname()
-  const { activeVenueId, activeVenueName } = useVenueStore()
   
   // Generate breadcrumb items based on current path
   const getBreadcrumbItems = () => {
@@ -41,18 +40,6 @@ export function SiteHeader() {
       const isCurrent = i === paths.length - 1
       
       items.push({ label, path, isCurrent })
-    }
-    
-    // Add active venue as the final item if present
-    if (activeVenueId && activeVenueName) {
-      const venueItem = { 
-        label: activeVenueName, 
-        path: '', 
-        isCurrent: true 
-      }
-      
-      // If we're on a venue-specific page, add the venue name as the final item
-      items.push(venueItem)
     }
     
     return items

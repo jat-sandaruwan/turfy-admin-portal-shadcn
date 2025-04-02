@@ -205,3 +205,90 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// GET endpoint for fetching multiple venues with filtering and pagination
+export async function GET(req: NextRequest) {
+  try {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Unauthorized access' },
+        { status: 403 }
+      );
+    }
+    
+    // Parse query parameters
+    const searchParams = req.nextUrl.searchParams;
+    const status = searchParams.get('status');
+    const query = searchParams.get('q');
+    const sort = searchParams.get('sort') || 'createdAt_desc';
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const country = searchParams.get('country');
+    
+    // Connect to database
+    await connectToDatabase();
+    
+    // Build query
+    let findQuery: any = {};
+    
+    // Add status filter
+    if (status === 'deleted') {
+      findQuery.deletedAt = { $ne: null };
+    } else {
+      if (status !== 'all') {
+        findQuery.status = status;
+      }
+      // Exclude deleted venues by default unless explicitly requested
+      findQuery.deletedAt = null;
+    }
+    
+    // Add search query
+    if (query) {
+      findQuery.$or = [
+        { name: { $regex: query, $options: 'i' } },
+        { address: { $regex: query, $options: 'i' } },
+      ];
+    }
+    
+    // Add country filter
+    if (country) {
+      findQuery.country = country;
+    }
+    
+    // Parse sort parameter
+    const [sortField, sortDirection] = sort.split('_');
+    const sortOptions: any = {};
+    sortOptions[sortField] = sortDirection === 'asc' ? 1 : -1;
+    
+    // Calculate pagination
+    const skip = (page - 1) * limit;
+    
+    // Execute query with pagination
+    const [venues, totalCount] = await Promise.all([
+      Venue.find(findQuery)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Venue.countDocuments(findQuery),
+    ]);
+    
+    // Calculate total pages
+    const totalPages = Math.ceil(totalCount / limit);
+    
+    return NextResponse.json({
+      venues,
+      totalCount,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error: any) {
+    console.error('Error fetching venues:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch venues' },
+      { status: 500 }
+    );
+  }
+}

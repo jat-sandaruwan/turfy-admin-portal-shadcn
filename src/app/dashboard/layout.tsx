@@ -32,7 +32,7 @@ export default async function DashboardLayout({
         console.log("User is not an admin, redirecting to login");
         redirect("/login?error=AccessDenied");
     }
-    
+
     return (
         <SidebarProvider
             style={
@@ -46,10 +46,10 @@ export default async function DashboardLayout({
             <SidebarInset>
                 <SiteHeader />
                 <div className="flex flex-1 flex-col">
-                    <div className="@container/main flex flex-1 flex-col gap-2">
-                    <Suspense fallback={<Loading />}>
+                    <div className="@container/main flex flex-1 flex-col gap-2 p-3">
+                        <Suspense fallback={<Loading />}>
                             {children}
-                    </Suspense>
+                        </Suspense>
                     </div>
                 </div>
             </SidebarInset>
