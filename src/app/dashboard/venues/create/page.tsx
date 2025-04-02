@@ -163,7 +163,6 @@ export default function CreateVenuePage() {
       longitude: parseFloat(data.longitude),
       latitude: parseFloat(data.latitude),
       commissionPercentage: parseFloat(data.commissionPercentage),
-      // Extract URLs from images if exists
       images: data.images?.map((img) => img.url) || [],
     };
 
@@ -236,7 +235,7 @@ export default function CreateVenuePage() {
                 </TabsContent>
 
                 <TabsContent value="location">
-                  <LocationTabContent 
+                  <LocationTabContent
                     form={form}
                     onBack={handleLocationBack}
                     onNext={handleLocationNext}
@@ -258,7 +257,7 @@ export default function CreateVenuePage() {
                     venueOwners={venueOwners}
                   />
                 </TabsContent>
-                
+
                 <TabsContent value="images">
                   <ImagesTabContent
                     form={form}
@@ -267,7 +266,7 @@ export default function CreateVenuePage() {
                     venueId={tempVenueId}
                   />
                 </TabsContent>
-                
+
                 <TabsContent value="review">
                   <ReviewTabContent
                     form={form}

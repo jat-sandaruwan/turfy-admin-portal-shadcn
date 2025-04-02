@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { connectToDatabase } from '@/lib/db/connection';
 import Venue from '@/lib/db/models/venue.model';
+import { User } from '@/lib/db/models/user.model';
 import { authOptions } from '@/lib/auth';
 import { v2 as cloudinary } from 'cloudinary';
+import { createVenueStripeAccount } from '@/lib/services/stripe.service';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -15,9 +17,8 @@ cloudinary.config({
 
 export async function POST(req: NextRequest) {
   try {
+    // Check authentication
     const session = await getServerSession(authOptions);
-    
-    // Check if user is authenticated and is an admin
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json(
         { error: 'Unauthorized access' },
@@ -27,8 +28,6 @@ export async function POST(req: NextRequest) {
     
     // Parse request body
     const body = await req.json();
-    
-    // Extract necessary fields including sportsTypes, amenities, and images
     const {
       name,
       description,
@@ -54,6 +53,22 @@ export async function POST(req: NextRequest) {
     
     // Connect to database
     await connectToDatabase();
+
+    // Fetch venue owner details for Stripe account creation
+    const owner = await User.findById(ownerId).select('email name');
+    if (!owner) {
+      return NextResponse.json(
+        { error: 'Venue owner not found' },
+        { status: 404 }
+      );
+    }
+    // Check if owner's email is defined to satisfy the function parameter requirement
+    if (!owner.email) {
+      return NextResponse.json(
+        { error: 'Venue owner email not found' },
+        { status: 400 }
+      );
+    }
     
     // Create venue with pending status
     const newVenue = new Venue({
@@ -68,7 +83,7 @@ export async function POST(req: NextRequest) {
       commissionPercentage,
       amenities: amenities || [],
       sportsTypes: sportsTypes || [],
-      images: [], // Start with empty images array, we'll update it after migration
+      images: [], // Start with empty images array, will update after migration
       country,
       currency,
       managers: [],
@@ -82,13 +97,14 @@ export async function POST(req: NextRequest) {
         4: 0,
         5: 0
       },
+      stripeAccountId: null, // Will be updated after Stripe account creation
       stripeOnboardingComplete: false
     });
     
     // Save venue to database to get the ID
     await newVenue.save();
     
-    // If there were images uploaded with a temporary ID, move them to the correct folder
+    // Process images if any
     if (images && images.length > 0) {
       const updatedImageUrls: string[] = [];
       
@@ -147,7 +163,30 @@ export async function POST(req: NextRequest) {
       await newVenue.save();
     }
     
+    // Create a Stripe Connect account for the venue
+    try {
+      const stripeAccount = await createVenueStripeAccount(
+        newVenue.id,
+        ownerId,
+        name,
+        owner.email
+      );
+      
+      // Update venue with Stripe account ID
+      newVenue.stripeAccountId = stripeAccount.id;
+      await newVenue.save();
+      
+      // We don't create the account link here as it's short-lived and will expire
+      // Instead, we'll create it on-demand when needed in the venue dashboard
+      
+    } catch (stripeError) {
+      // Log error but don't fail venue creation
+      console.error('Error creating Stripe account:', stripeError);
+      // The venue gets created but without Stripe integration
+    }
+    
     return NextResponse.json(newVenue, { status: 201 });
+    
   } catch (error: any) {
     console.error('Error creating venue:', error);
     

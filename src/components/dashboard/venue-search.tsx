@@ -69,7 +69,7 @@ export function VenueSearch() {
   };
   
   return (
-    <div className="w-full px-3 mb-3">
+    <div className="w-full px-3 my-3">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button

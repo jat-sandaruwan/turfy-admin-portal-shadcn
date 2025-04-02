@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import { VenueFormValues } from "@/app/dashboard/venues/create/types";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface SportsType {
   _id: string;
@@ -86,24 +87,23 @@ export function FeaturesTabContent({
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {sportsTypes.map((sport) => (
                   <FormItem
-                    key={sport._id}
+                    key={sport._id+"fitem"}
                     className="flex flex-row items-start space-x-3 space-y-0"
                   >
                     <FormControl>
-                      <input
-                        type="checkbox"
-                        className="h-4 w-4 mt-1"
+                      <Checkbox
+                        id={sport._id}
                         checked={field.value?.includes(sport._id)}
-                        onChange={(e) => {
-                          const updatedValue = e.target.checked
+                        onCheckedChange={(checked) => {
+                          const updatedValue = checked
                             ? [...(field.value || []), sport._id]
                             : field.value?.filter((id) => id !== sport._id) || [];
                           field.onChange(updatedValue);
                         }}
+                        className="h-4 w-4"
                       />
                     </FormControl>
-                    <FormLabel className="font-normal flex items-center">
-                      {sport.icon && <span className="mr-1">{sport.icon}</span>}
+                    <FormLabel className="font-normal">
                       {sport.name}
                     </FormLabel>
                   </FormItem>
@@ -140,13 +140,24 @@ export function FeaturesTabContent({
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {amenities.map((amenity) => (
                   <FormItem
-                    key={amenity._id}
+                    key={amenity._id+"fitem"}
                     className="flex flex-row items-start space-x-3 space-y-0"
                   >
                     <FormControl>
-                      <input
+                      <Checkbox 
+                        id={amenity._id}
+                        checked={field.value?.includes(amenity.value)}
+                        onCheckedChange={(checked) => {
+                          const updatedValue = checked
+                            ? [...(field.value || []), amenity.value]
+                            : field.value?.filter((value) => value !== amenity.value) || [];
+                          field.onChange(updatedValue);
+                        }}
+                        className="h-4 w-4"
+                      />
+                      {/* <input
                         type="checkbox"
-                        className="h-4 w-4 mt-1"
+                        className="h-4 w-4"
                         checked={field.value?.includes(amenity.value)}
                         onChange={(e) => {
                           const updatedValue = e.target.checked
@@ -154,7 +165,7 @@ export function FeaturesTabContent({
                             : field.value?.filter((value) => value !== amenity.value) || [];
                           field.onChange(updatedValue);
                         }}
-                      />
+                      /> */}
                     </FormControl>
                     <FormLabel className="font-normal">{amenity.name}</FormLabel>
                   </FormItem>

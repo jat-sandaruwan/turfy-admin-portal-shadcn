@@ -176,16 +176,23 @@ export function ReviewTabContent({
           </div>
           <CardContent className="p-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {values.images.map((image, index) => (
-                <div key={index} className="aspect-video relative rounded-md overflow-hidden border">
-                  <Image
-                    src={image.url}
-                    alt={`Venue image ${index + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
+              {values.images.map((image, index) => {
+                // Use the image directly if it's a string, otherwise check for the url property
+                const imageUrl = typeof image === "string" ? image : image.url;
+                return (
+                  <div
+                    key={index}
+                    className="aspect-video relative rounded-md overflow-hidden border"
+                  >
+                    <Image
+                      src={imageUrl}
+                      alt={`Venue image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
