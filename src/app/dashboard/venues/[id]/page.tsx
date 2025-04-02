@@ -16,7 +16,8 @@ import {
   Check,
   X,
   Trash2,
-  RotateCcw
+  RotateCcw,
+  Pencil
 } from "lucide-react";
 import Image from "next/image";
 
@@ -336,6 +337,16 @@ export default function VenueDetailsPage() {
                   </Button>
                 )}
                 
+                {/* Edit button */}
+                <Button 
+                  variant="outline"
+                  onClick={() => router.push(`/dashboard/venues/${id}/edit`)}
+                  disabled={!!venue.deletedAt}
+                >
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </Button>
+
                 {/* Delete button always shown for non-deleted venues */}
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
